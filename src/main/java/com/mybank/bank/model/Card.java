@@ -3,6 +3,7 @@ package com.mybank.bank.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 @Table(name = "cards")
 @NoArgsConstructor
 @Getter
+@Setter
 public class Card {
 
     @Id
@@ -36,7 +38,7 @@ public class Card {
     @JoinColumn(name = "owner_id")
     private User owner;
 
-    public Card(String number, User owner, String s) {
+    public Card(String number, User owner, String cvv) {
         this.number = number;
         this.cvv = cvv;
         this.owner = owner;

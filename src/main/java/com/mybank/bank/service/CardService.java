@@ -70,9 +70,7 @@ public class CardService {
         return number;
     }
     private String generateCvv() {
-
         String cvv = "";
-
         while (cvv.length() < 3) {
             cvv += Integer.toString(random.nextInt(10));
         }
