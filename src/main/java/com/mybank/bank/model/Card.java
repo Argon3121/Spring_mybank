@@ -1,25 +1,51 @@
 package com.mybank.bank.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "cards")
-@Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@Getter
 public class Card {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true, length = 16)
     private String number;
 
-    private Double balance;
+    @Column(nullable = false, length = 3)
+    private String cvv;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(nullable = false)
+    private BigDecimal balance;
+
+    @Column(nullable = false)
+    private String status;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private User owner;
+
+    public Card(String number, User owner, String s) {
+        this.number = number;
+        this.cvv = cvv;
+        this.owner = owner;
+    }
+
+    @PrePersist
+    void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.balance = BigDecimal.ZERO;
+        this.status = "ACTIVE";
+    }
 }

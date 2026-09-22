@@ -24,9 +24,9 @@ public class CardController {
         return cardService.getById(id);
     }
 
-    @PostMapping
-    public Card create(@RequestBody Card card) {
-        return cardService.create(card);
+    @PostMapping("/{user_id}")
+    public Card createCard(@PathVariable Long user_id) {
+        return cardService.createCard(user_id);
     }
 
     @DeleteMapping("/{id}")
