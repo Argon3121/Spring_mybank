@@ -42,7 +42,7 @@ public class CardService {
         return card;
     }
 
-    private Card findCardByNumber(String number) {
+    public  Card findCardByNumber(String number) {
         return cardRepository.findByNumber(number)
                 .orElseThrow(() ->
                         new RuntimeException("Карты нет!"));

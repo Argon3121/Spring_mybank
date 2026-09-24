@@ -12,6 +12,8 @@ import java.util.List;
 
 @Service
 public class TransactionService {
+    @Autowired
+    private CardService cardService;
 
     @Autowired
     private TransactionRepository transactionRepository;
@@ -79,5 +81,41 @@ public class TransactionService {
         }
 
         return transactionRepository.findByCardId(cardId);
+    }
+
+    public Transaction transfer(String fromNumber, String toNumber, BigDecimal amount) {
+
+        Card fromCard = cardService.findCardByNumber(fromNumber);
+        Card toCard = cardService.findCardByNumber(toNumber);
+
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new RuntimeException("Сумма должна быть больше 0");
+        }
+
+        if (fromCard.getBalance().compareTo(amount) < 0) {
+            throw new RuntimeException("Недостаточно средств");
+        }
+
+        fromCard.setBalance(
+                fromCard.getBalance().subtract(amount)
+        );
+
+        toCard.setBalance(
+                toCard.getBalance().add(amount)
+        );
+
+        cardRepository.save(fromCard);
+        cardRepository.save(toCard);
+
+        Transaction transaction = new Transaction(
+                amount,
+                "TRANSFER",
+                fromCard,
+                toCard,
+                fromCard.getBalance(),
+                toCard.getBalance()
+        );
+
+        return transactionRepository.save(transaction);
     }
 }

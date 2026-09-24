@@ -22,7 +22,7 @@ public class Card {
     @Column(nullable = false, unique = true, length = 16)
     private String number;
 
-    @Column(nullable = false, length = 3)
+    @Column(nullable = true, length = 3)
     private String cvv;
 
     @Column(nullable = false)
@@ -34,7 +34,7 @@ public class Card {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "owner_id")
     private User owner;
 

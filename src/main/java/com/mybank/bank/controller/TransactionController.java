@@ -52,4 +52,20 @@ public class TransactionController {
 
         return transactionService.getHistory(cardId);
     }
+    @PostMapping("/transfer")
+    public Transaction transfer(
+            @RequestBody Map<String, String> body) {
+
+        String fromNumber = body.get("fromNumber");
+        String toNumber = body.get("toNumber");
+
+        BigDecimal amount =
+                new BigDecimal(body.get("amount"));
+
+        return transactionService.transfer(
+                fromNumber,
+                toNumber,
+                amount
+        );
+    }
 }

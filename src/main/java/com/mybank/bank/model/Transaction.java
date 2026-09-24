@@ -28,10 +28,46 @@ public class Transaction {
     @JoinColumn(name = "card_id")
     private Card card;
 
-    public Transaction(BigDecimal amount, String type, Card card) {
+    @ManyToOne
+    @JoinColumn(name = "from_card_id")
+    private Card fromCard;
+
+    @ManyToOne
+    @JoinColumn(name = "to_card_id")
+    private Card toCard;
+
+    private BigDecimal fromBalance;
+
+    private BigDecimal toBalance;
+
+    public Transaction(
+            BigDecimal amount,
+            String type,
+            Card card) {
+
         this.amount = amount;
         this.type = type;
         this.card = card;
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public Transaction(
+            BigDecimal amount,
+            String type,
+            Card fromCard,
+            Card toCard,
+            BigDecimal fromBalance,
+            BigDecimal toBalance) {
+
+        this.amount = amount;
+        this.type = type;
+
+        this.fromCard = fromCard;
+        this.toCard = toCard;
+
+        this.fromBalance = fromBalance;
+        this.toBalance = toBalance;
+
         this.createdAt = LocalDateTime.now();
     }
 }
