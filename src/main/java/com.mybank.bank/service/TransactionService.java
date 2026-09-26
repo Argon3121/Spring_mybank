@@ -80,7 +80,11 @@ public class TransactionService {
             throw new RuntimeException("Карта не найдена");
         }
 
-        return transactionRepository.findByCardId(cardId);
+        return transactionRepository.findByCardIdOrFromCardIdOrToCardIdOrderByCreatedAtDesc(
+                cardId,
+                cardId,
+                cardId
+        );
     }
 
     public Transaction transfer(String fromNumber, String toNumber, BigDecimal amount) {

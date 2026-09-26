@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Карты — MyBank</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div th:replace="~{fragments :: topbar}"></div>
+
+<main>
+    <div class="container">
+        <div class="page-head">
+            <div>
+                <h1>Мои карты</h1>
+                <p>Управляйте картами и балансом в одном месте.</p>
+            </div>
+            <form method="post" action="/cards-page/create">
+                <button class="primary" type="submit">+ Новая карта</button>
+            </form>
+        </div>
+
+        <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+        <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+
+        <div class="balance-card">
+            <div class="balance-label">Общий баланс</div>
+            <div class="balance-value" th:text="${#numbers.formatDecimal(totalBalance, 1, 2)} + ' ₽'">0.00 ₽</div>
+            <div class="balance-bottom">
+                <span th:text="'Владелец: ' + ${user.name}">Владелец</span>
+                <a class="button button-light" href="/transfer">Сделать перевод</a>
+            </div>
+        </div>
+
+        <div class="section-title">
+            <h2>Ваши карты</h2>
+            <span th:text="${#lists.size(cards)} + ' шт.'">0 шт.</span>
+        </div>
+
+        <div class="cards-grid" th:if="${!#lists.isEmpty(cards)}">
+            <div class="bank-card" th:each="card : ${cards}">
+                <div class="card-top">
+                    <span class="card-brand">MYBANK</span>
+                    <span class="card-status" th:text="${card.status}">ACTIVE</span>
+                </div>
+
+                <div class="card-number"
+                     th:text="|${#strings.substring(card.number, 0, 4)} •••• •••• ${#strings.substring(card.number, 12, 16)}|">
+                    0000 •••• •••• 0000
+                </div>
+
+                <div class="card-bottom">
+                    <div>
+                        <small>Баланс</small>
+                        <span class="card-balance" th:text="${#numbers.formatDecimal(card.balance, 1, 2)} + ' ₽'">0.00 ₽</span>
+                    </div>
+                    <div>
+                        <small>ID</small>
+                        <span th:text="${card.id}">1</span>
+                    </div>
+                </div>
+
+                <form method="post" action="/cards-page/delete" style="margin-top: 18px; position: relative; z-index: 2;">
+                    <input type="hidden" name="cardId" th:value="${card.id}">
+                    <button class="button-danger" type="submit" onclick="return confirm('Удалить эту карту?')">Удалить карту</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="panel empty" th:if="${#lists.isEmpty(cards)}">
+            <h3>Карт пока нет</h3>
+            <p>Создайте первую карту кнопкой выше.</p>
+        </div>
+
+        <div class="section-title">
+            <h2>Операции</h2>
+        </div>
+
+        <div class="actions-grid" th:if="${!#lists.isEmpty(cards)}">
+            <div class="panel">
+                <h3>Пополнить карту</h3>
+                <p>Добавьте деньги на выбранную карту.</p>
+                <form method="post" action="/cards-page/deposit">
+                    <div class="field">
+                        <label>Карта</label>
+                        <select name="cardId" required>
+                            <option th:each="card : ${cards}"
+                                    th:value="${card.id}"
+                                    th:text="|${#strings.substring(card.number, 0, 4)} •••• •••• ${#strings.substring(card.number, 12, 16)} — ${#numbers.formatDecimal(card.balance, 1, 2)} ₽|">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Сумма</label>
+                        <input type="number" name="amount" min="0.01" step="0.01" placeholder="1000" required>
+                    </div>
+                    <button class="primary" type="submit">Пополнить</button>
+                </form>
+            </div>
+
+            <div class="panel">
+                <h3>Снять деньги</h3>
+                <p>Снимите указанную сумму с карты.</p>
+                <form method="post" action="/cards-page/withdraw">
+                    <div class="field">
+                        <label>Карта</label>
+                        <select name="cardId" required>
+                            <option th:each="card : ${cards}"
+                                    th:value="${card.id}"
+                                    th:text="|${#strings.substring(card.number, 0, 4)} •••• •••• ${#strings.substring(card.number, 12, 16)} — ${#numbers.formatDecimal(card.balance, 1, 2)} ₽|">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Сумма</label>
+                        <input type="number" name="amount" min="0.01" step="0.01" placeholder="300" required>
+                    </div>
+                    <button class="button-danger" type="submit">Снять</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

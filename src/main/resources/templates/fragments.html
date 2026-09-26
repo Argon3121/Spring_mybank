@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="topbar" class="topbar">
+    <div class="topbar-inner">
+        <a class="logo" href="/cards-page">
+            <div class="logo-mark">M</div>
+            MyBank
+        </a>
+
+        <nav class="nav">
+            <a href="/cards-page">Карты</a>
+            <a href="/transfer">Перевод</a>
+            <a href="/history">История</a>
+            <a href="/logout">Выйти</a>
+        </nav>
+
+        <div class="user-chip">
+            <div class="avatar" th:text="${session.userName != null ? #strings.substring(session.userName, 0, 1).toUpperCase() : 'M'}">M</div>
+            <span th:text="${session.userName}">Пользователь</span>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>История — MyBank</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div th:replace="~{fragments :: topbar}"></div>
+
+<main>
+    <div class="container">
+        <div class="page-head">
+            <div>
+                <h1>История операций</h1>
+                <p>Пополнения, снятия и переводы по карте.</p>
+            </div>
+        </div>
+
+        <div class="panel" style="margin-bottom: 18px;">
+            <form method="get" action="/history">
+                <div class="form-row">
+                    <div class="field" style="margin-bottom: 0;">
+                        <label>Выберите карту</label>
+                        <select name="cardId" required>
+                            <option th:each="card : ${cards}"
+                                    th:value="${card.id}"
+                                    th:selected="${selectedCard != null && selectedCard.id == card.id}"
+                                    th:text="|${#strings.substring(card.number, 0, 4)} •••• •••• ${#strings.substring(card.number, 12, 16)}|">
+                            </option>
+                        </select>
+                    </div>
+                    <div style="display: flex; align-items: end;">
+                        <button class="primary" type="submit">Показать историю</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="table-wrap" th:if="${transactions != null && !#lists.isEmpty(transactions)}">
+            <table>
+                <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Тип</th>
+                    <th>Направление</th>
+                    <th>Сумма</th>
+                    <th>Баланс</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="transaction : ${transactions}">
+                    <td th:text="${#temporals.format(transaction.createdAt, 'dd.MM.yyyy HH:mm')}">24.09.2026 19:00</td>
+                    <td>
+                        <span class="badge badge-blue" th:if="${transaction.type == 'TRANSFER'}">ПЕРЕВОД</span>
+                        <span class="badge badge-green" th:if="${transaction.type == 'DEPOSIT'}">ПОПОЛНЕНИЕ</span>
+                        <span class="badge badge-red" th:if="${transaction.type == 'WITHDRAW'}">СНЯТИЕ</span>
+                    </td>
+                    <td th:if="${transaction.type == 'TRANSFER'}">
+                        <div th:if="${transaction.fromCard != null && selectedCard.id == transaction.fromCard.id}">
+                            <strong>→ Получателю</strong><br>
+                            <small th:text="${transaction.toCard.number}">0000000000000000</small>
+                        </div>
+                        <div th:if="${transaction.toCard != null && selectedCard.id == transaction.toCard.id}">
+                            <strong>← От отправителя</strong><br>
+                            <small th:text="${transaction.fromCard.number}">0000000000000000</small>
+                        </div>
+                    </td>
+                    <td th:if="${transaction.type != 'TRANSFER'}">
+                        <span th:if="${transaction.type == 'DEPOSIT'}">На карту</span>
+                        <span th:if="${transaction.type == 'WITHDRAW'}">С карты</span>
+                    </td>
+                    <td th:text="|${transaction.type == 'WITHDRAW' || (transaction.type == 'TRANSFER' && transaction.fromCard != null && selectedCard.id == transaction.fromCard.id) ? '- ' : '+ '}${#numbers.formatDecimal(transaction.amount, 1, 2)} ₽|">
+                        + 1000 ₽
+                    </td>
+                    <td>
+                        <span th:if="${transaction.type == 'TRANSFER' && selectedCard.id == transaction.fromCard.id}"
+                              th:text="${#numbers.formatDecimal(transaction.fromBalance, 1, 2)} + ' ₽'">700 ₽</span>
+                        <span th:if="${transaction.type == 'TRANSFER' && selectedCard.id == transaction.toCard.id}"
+                              th:text="${#numbers.formatDecimal(transaction.toBalance, 1, 2)} + ' ₽'">800 ₽</span>
+                        <span th:if="${transaction.type != 'TRANSFER'}"
+                              th:text="${#numbers.formatDecimal(transaction.card.balance, 1, 2)} + ' ₽'">1000 ₽</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="panel empty" th:if="${transactions == null || #lists.isEmpty(transactions)}">
+            <h3>История пуста</h3>
+            <p>По выбранной карте пока нет операций.</p>
+        </div>
+    </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Перевод — MyBank</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div th:replace="~{fragments :: topbar}"></div>
+
+<main>
+    <div class="container">
+        <div class="page-head">
+            <div>
+                <h1>Перевод</h1>
+                <p>Переведите деньги с одной карты на другую.</p>
+            </div>
+        </div>
+
+        <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+        <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+
+        <div class="panel" style="max-width: 680px;">
+            <h3>Новый перевод</h3>
+            <p>Выберите свою карту и укажите номер карты получателя.</p>
+
+            <form method="post" action="/transfer">
+                <div class="field">
+                    <label>Откуда</label>
+                    <select name="fromNumber" required>
+                        <option th:each="card : ${cards}"
+                                th:value="${card.number}"
+                                th:text="|${#strings.substring(card.number, 0, 4)} •••• •••• ${#strings.substring(card.number, 12, 16)} — ${#numbers.formatDecimal(card.balance, 1, 2)} ₽|">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Куда</label>
+                    <input type="text" name="toNumber" maxlength="16" minlength="16" placeholder="16 цифр карты получателя" required>
+                </div>
+
+                <div class="field">
+                    <label>Сумма</label>
+                    <input type="number" name="amount" min="0.01" step="0.01" placeholder="300" required>
+                </div>
+
+                <button class="primary" type="submit">Перевести деньги</button>
+            </form>
+        </div>
+    </div>
+</main>
+</body>
+</html>

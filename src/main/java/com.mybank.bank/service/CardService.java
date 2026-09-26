@@ -24,6 +24,10 @@ public class CardService {
         return cardRepository.findAll();
     }
 
+    public List<Card> getByUserId(Long userId) {
+        return cardRepository.findByOwnerId(userId);
+    }
+
     public Card getById(Long id) {
 
         return cardRepository.findById(id)

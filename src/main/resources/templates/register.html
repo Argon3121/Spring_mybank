@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация — MyBank</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="auth-page">
+    <div class="auth-box">
+        <div class="logo auth-logo">
+            <div class="logo-mark">M</div>
+            MyBank
+        </div>
+
+        <h1>Создать аккаунт</h1>
+        <p>Зарегистрируйтесь, чтобы пользоваться банком.</p>
+
+        <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+
+        <form method="post" action="/register">
+            <div class="field">
+                <label for="name">Имя</label>
+                <input id="name" type="text" name="name" placeholder="Денис" required>
+            </div>
+
+            <div class="field">
+                <label for="email">Email</label>
+                <input id="email" type="email" name="email" placeholder="damirDurak@mail.ru" required>
+            </div>
+
+            <div class="field">
+                <label for="password">Пароль</label>
+                <input id="password" type="password" name="password" placeholder="Придумайте пароль" required>
+            </div>
+
+            <button class="primary" type="submit">Создать аккаунт</button>
+        </form>
+
+        <div class="auth-link">
+            Уже есть аккаунт? <a href="/login">Войти</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

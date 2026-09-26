@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход — MyBank</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="auth-page">
+    <div class="auth-box">
+        <div class="logo auth-logo">
+            <div class="logo-mark">M</div>
+            MyBank
+        </div>
+
+        <h1>Добро пожаловать</h1>
+        <p>Войдите в свой банковский аккаунт.</p>
+
+        <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+        <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+
+        <form method="post" action="/login">
+            <div class="field">
+                <label for="email">Email</label>
+                <input id="email" type="email" name="email" placeholder="DamirLox@mail.ru" required>
+            </div>
+
+            <div class="field">
+                <label for="password">Пароль</label>
+                <input id="password" type="password" name="password" placeholder="Введите пароль" required>
+            </div>
+
+            <button class="primary" type="submit">Войти</button>
+        </form>
+
+        <div class="auth-link">
+            Нет аккаунта? <a href="/register">Зарегистрироваться</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

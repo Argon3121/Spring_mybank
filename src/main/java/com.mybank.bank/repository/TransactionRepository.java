@@ -8,5 +8,9 @@ import java.util.List;
 public interface TransactionRepository
         extends JpaRepository<Transaction, Long> {
 
-    List<Transaction> findByCardId(Long cardId);
+    List<Transaction> findByCardIdOrFromCardIdOrToCardIdOrderByCreatedAtDesc(
+            Long cardId,
+            Long fromCardId,
+            Long toCardId
+    );
 }
